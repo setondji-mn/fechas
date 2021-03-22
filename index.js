@@ -6,7 +6,11 @@ let person = [
     {"name" : "David", "id" : 3 },
     {"name" : "Bickel", "id" : 4 },
     {"name" : "Gary", "id" : 5 }, 
-    {"name" : "Beni", "id" : 6 }
+    {"name" : "Beni", "id" : 6 },
+    {"name" : "David", "id" : 3 },
+    {"name" : "Bickel", "id" : 4 },
+    {"name" : "Gary", "id" : 5 }, 
+    {"name" : "Chris", "id" : 7 }
 ]; 
 
 // localStorage.setItem('members', JSON.stringify(person));
@@ -28,5 +32,26 @@ const shuffleArray = (array) => {
 }
 
 
-console.log(shuffleArray(person));
+const getCouples = (people, size) =>{
+    let members = shuffleArray(people);
+    let couples = [];
+    let nCouples = (people.length % size) === 1 ? Math.floor(people.length/size) : Math.ceil(people.length/size); 
+
+
+    let i = 0;
+    while(i<nCouples){
+        couples.push(members.slice(i*size, (i*size)+size));
+        i+=1;
+    }
+
+    if((people.length % size) === 1) 
+    couples[i-1].push(members[members.length-1]);
+
+    return couples;
+}
+
+
+
+console.log(getCouples(person, 4));
+
 
