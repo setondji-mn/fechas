@@ -1,13 +1,24 @@
-// localStorage.clear();
-let members = [
+localStorage.clear();
+const members = [
     {"name" : "Doriane", "id" : 1 },
     {"name" : "Maelle", "id" : 2 },
     {"name" : "David", "id" : 3 },
     {"name" : "Bickel", "id" : 4 },
     {"name" : "Gary", "id" : 5 }, 
     {"name" : "Beni", "id" : 6 }, 
-    {"name" : "Chris", "id" : 7 }
-]; 
+    {"name" : "Chris", "id" : 7 },
+    {"name" : "Anicet", "id" : 8 },
+    {"name" : "Nael", "id" : 9 }
+];
+
+const couplesSize = 3;
+const nOfDates = 4;
+let datesCount = 0;
+let datesHistory = [];
+
+localStorage.setItem('datesHistory', JSON.stringify(datesHistory));
+localStorage.setItem('datesCount', JSON.stringify(datesCount));
+
 
 // localStorage.setItem('members', JSON.stringify(person));
 // let persons2 = JSON.parse(localStorage.getItem('members'));
@@ -33,17 +44,16 @@ const shuffleArray = (array) => {
     return shuffled;
 }
 
-
-const getCouples = (people, size) =>{
+const generateCouples = (people, size) => {
 
     let members = shuffleArray(people);
     let couples = [];
 
     //if there's 1 person left, we reduce the number of couples (that last person will join the last couple) 
-    let nCouples = (people.length % size) === 1 ? Math.floor(people.length/size) : Math.ceil(people.length/size); 
+    let nOfCouples = (people.length % size) === 1 ? Math.floor(people.length/size) : Math.ceil(people.length/size); 
 
     let i = 0;
-    while(i<nCouples){
+    while(i<nOfCouples){
         couples.push(members.slice(i*size, (i*size)+size));
         i+=1;
     }
@@ -54,9 +64,6 @@ const getCouples = (people, size) =>{
 
     return couples;
 }
-
-
-
 
 const isValidCouple = (newCouple, oldCouple) => {
     let check = 0;
@@ -79,8 +86,7 @@ const isValidCouple = (newCouple, oldCouple) => {
     return check < 2;
 }
 
-
-const isValidDate = (newDate, oldDate) =>{
+const isValidDate = (newDate, oldDate) => {
     let check =0;
     newDate.forEach( couple =>{
         oldDate.forEach( olds =>{
@@ -92,14 +98,34 @@ const isValidDate = (newDate, oldDate) =>{
 }
 
 
-let date1 = getCouples(members, 2);
-let date2 = getCouples(members, 2);
-
-// console.log(isValidDate(date2, date1));
 
 
-while(!isValidDate(date2, date1)){
-    date2 = getCouples(members, 2);
+
+
+
+const launchDating = () => {
+
+    let newDate = generateCouples(members, couplesSize); 
+
+    datesHistory.forEach( oldDate => {
+
+        while(!isValidDate(newDate, oldDate)){
+            newDate = generateCouples(members, couplesSize);
+        }
+
+    });
+
+    datesHistory.push(newDate);
+    localStorage.setItem('datesHistory', JSON.stringify(datesHistory));
+
+    datesCount+=1;
+    localStorage.setItem('datesCount', JSON.stringify(datesCount));
 }
 
-console.log(date1, date2);
+
+
+
+
+// for (let i = 0; i < 4; i++) {
+//     launchDating();
+// }
