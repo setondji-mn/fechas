@@ -1,5 +1,5 @@
 // localStorage.clear();
-let person = [
+let members = [
     {"name" : "Doriane", "id" : 1 },
     {"name" : "Maelle", "id" : 2 },
     {"name" : "David", "id" : 3 },
@@ -35,11 +35,11 @@ const shuffleArray = (array) => {
 
 
 const getCouples = (people, size) =>{
-    
+
     let members = shuffleArray(people);
     let couples = [];
 
-    //if there's 1 person left, we reduce the number of couples so they can later join the last couple. 
+    //if there's 1 person left, we reduce the number of couples (that last person will join the last couple) 
     let nCouples = (people.length % size) === 1 ? Math.floor(people.length/size) : Math.ceil(people.length/size); 
 
     let i = 0;
@@ -57,6 +57,49 @@ const getCouples = (people, size) =>{
 
 
 
-console.log(getCouples(person, 2));
+
+const isValidCouple = (newCouple, oldCouple) => {
+    let check = 0;
+    
+    if(newCouple.length < oldCouple.length){
+
+        oldCouple.forEach( partner => {
+            if(newCouple.includes(partner))
+            check+=1;
+        });
+
+    } else {
+
+        newCouple.forEach( partner => {
+            if(oldCouple.includes(partner))
+            check+=1;
+        });
+    }
+
+    return check < 2;
+}
 
 
+const isValidDate = (newDate, oldDate) =>{
+    let check =0;
+    newDate.forEach( couple =>{
+        oldDate.forEach( olds =>{
+            if(!isValidCouple(couple, olds))
+            check+=1;
+        })
+    });
+    return !check;
+}
+
+
+let date1 = getCouples(members, 2);
+let date2 = getCouples(members, 2);
+
+// console.log(isValidDate(date2, date1));
+
+
+while(!isValidDate(date2, date1)){
+    date2 = getCouples(members, 2);
+}
+
+console.log(date1, date2);
