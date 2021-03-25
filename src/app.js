@@ -1,4 +1,4 @@
-localStorage.clear();
+
 const members = [
     {"name" : "Doriane", "id" : 1 },
     {"name" : "Maelle", "id" : 2 },
@@ -16,6 +16,8 @@ const nOfDates = 4;
 let datesCount = 0;
 let datesHistory = [];
 
+localStorage.clear();
+localStorage.setItem('members', JSON.stringify(members));
 localStorage.setItem('datesHistory', JSON.stringify(datesHistory));
 localStorage.setItem('datesCount', JSON.stringify(datesCount));
 
@@ -42,8 +44,6 @@ const launchDating = () => {
     datesCount+=1;
     localStorage.setItem('datesCount', JSON.stringify(datesCount));
 }
-
-
 
 
 

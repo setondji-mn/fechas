@@ -19,6 +19,10 @@ const shuffleArray = (array) => {
     return shuffled;
 }
 
+const splitArray = (array, nOfsplits, size) =>{
+
+}
+
 const generateCouples = (people, size) => {
 
     let members = shuffleArray(people);
