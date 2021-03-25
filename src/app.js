@@ -51,4 +51,8 @@ for (let i = 0; i < nOfDates; i++) {
     launchDating();
 }
 
-console.log(localStorage);
+// console.log(localStorage);
+
+let avatars = document.querySelector('.avatars');
+
+avatars.innerHTML= getAvatarList(members);

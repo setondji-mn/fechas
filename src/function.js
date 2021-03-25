@@ -75,3 +75,17 @@ const isValidDate = (newDate, oldDate) => {
     });
     return !check;
 }
+
+const generateAvatar = (name) => {
+    const query = `https://ui-avatars.com/api/?name=${name}&rounded=true&background=5c738a&size=35&color=ffffff&uppercase=false`;
+    avatar = `<img src=${query} data-bs-toggle="tooltip" data-bs-placement="top" title=${name}>`;
+    return avatar;
+}
+
+const getAvatarList = (members) => {
+    let avatarList="";
+    members.forEach( member =>{
+        avatarList+=`<span class="avatar">${generateAvatar(member.name)}</span>`;
+    });
+    return avatarList;
+}
