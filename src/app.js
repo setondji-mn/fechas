@@ -29,12 +29,13 @@ const initStorage = () =>{
     localStorage.setItem('coupleSize', JSON.stringify(2));
 };
 
-// let persons2 = JSON.parse(localStorage.getItem('members'));
 
+const launchDating = () => {
 
-const launchDating = (members, coupleSize, datesCount) => {
+    let members = JSON.parse(localStorage.getItem('members'));
+    let coupleSize = JSON.parse(localStorage.getItem('coupleSize'));
 
-    let datesHistory = JSON.parse(localStorage.getItem('dateHistory'));
+    let datesHistory = JSON.parse(localStorage.getItem('datesHistory'));
     let newDate = generateCouples(members, coupleSize); 
 
     datesHistory.forEach( oldDate => {
@@ -48,8 +49,7 @@ const launchDating = (members, coupleSize, datesCount) => {
     datesHistory.push(newDate);
     localStorage.setItem('datesHistory', JSON.stringify(datesHistory));
 
-    datesCount+=1;
-    localStorage.setItem('datesCount', JSON.stringify(datesCount));
+    return newDate;
 }
 
 let homePage = `<div class="help-text">
@@ -65,15 +65,37 @@ let setUpPage = `<div class="main-content">
         <div class="avatars"></div>
     </div>
     <div>
-        <form>
-            <div class="mb-3">
-            <label for="timer" class="form-label">Timer (min) </label>
-            <input type="number" class="form-control" id="timer">
+        <form id="setup-form">
+
+            <div class="">
+
+            <div class="col">
+                <label for="timer" class="form-label">Timer (min) </label>
+                <input type="number" class="form-control" id="timer" name="timer" required>
             </div>
-            
-            <button id="next-step" type="submit" class="btn btn-primary">Submit</button>
+
+            <div class="col">
+                <select class="form-select" aria-label="Default select example" name="size">
+                    <option value="2" selected>2 members</option>
+                    <option value="3" >3 members</option>
+                </select>
+            </div>
+            <button id="next" type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>
+</div>`;
+
+let playPage = `<div class="main-content">
+
+    <div class="dates-count">
+    <p> You have ${JSON.parse(localStorage.getItem('nOfDates')) - JSON.parse(localStorage.getItem('datesCount'))} dates left</p>
+    </div>
+
+    <div class="couples row">
+    </div>
+    <a id="launch-date" class="btn btn-primary"> Launch Date </a>
+    <div></div>
+
 </div>`;
 
 const loadStep = (step) =>{
@@ -90,6 +112,13 @@ const loadStep = (step) =>{
             pageContent.innerHTML = homePage;
             localStorage.setItem('currentStep', 'home');
             localStorage.setItem('nextStep', 'setup');
+
+            let nextStepButton = document.getElementById('next-step');
+
+            nextStepButton.addEventListener('click', e =>{
+                e.preventDefault();
+                loadStep(localStorage.getItem('nextStep'));
+            });
         break;
 
         case 'setup':
@@ -100,10 +129,46 @@ const loadStep = (step) =>{
             let avatars = document.querySelector('.avatars');
             avatars.innerHTML= getAvatarList(members);
             localStorage.setItem('currentStep', 'setup');
-            localStorage.setItem('nextStep', 'home');
+            localStorage.setItem('nextStep', 'play');
+
+            let form = document.getElementById('setup-form');
+
+            form.addEventListener('submit', (e)=>{
+                e.preventDefault();
+                localStorage.setItem('datesTimer', JSON.stringify(parseInt(form.timer.value)));
+                localStorage.setItem('coupleSize', JSON.stringify(parseInt(form.size.value)));
+                loadStep(localStorage.getItem('nextStep'));
+
+            });
         break;
 
-        case 'b':
+        case 'play':
+            pageTitle.textContent = "So... you wanna have dates? 😏";
+            pageSubTitle.textContent = "Great! Because Fechas can help you with that.";
+            pageContent.innerHTML = playPage;
+            localStorage.setItem('currentStep', 'play');
+            localStorage.setItem('nextStep', 'end');
+
+            let launchButton = document.getElementById('launch-date');
+            launchButton.addEventListener('click', e =>{
+
+                let newDate = launchDating();
+                console.log(newDate);
+                
+                // localStorage.setItem('datesCount', JSON.stringify( JSON.parse(localStorage.getItem('datesCount'))+1 ));
+
+                let coupleList = document.querySelector('.couples');
+                coupleList.innerHTML = '';
+                newDate.forEach(date => {
+                    coupleList.innerHTML += `<div class="col-4 single-couple">${getAvatarList(date)}</div>`;
+                });
+                
+                
+
+            });
+            
+            
+
         break;
     
         default:
@@ -111,24 +176,22 @@ const loadStep = (step) =>{
         break;
     }
 
-    let nextStepButton = document.getElementById('next-step');
-
-    nextStepButton.addEventListener('click', (e)=>{
-        e.preventDefault();
-        loadStep(localStorage.getItem('nextStep'));
-    });
+    
 
 };
 
 
-console.log(localStorage);
+// console.log(localStorage);
 
 if (localStorage.length===0) {
     initStorage();
 }
 
 loadStep(localStorage.getItem('currentStep'));
-// switchStep();
+
+
+
+
 
 
 
